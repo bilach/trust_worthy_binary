@@ -3,7 +3,7 @@ name: Build and Release Hello World
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
   workflow_dispatch:
 
 jobs:
@@ -20,7 +20,8 @@ jobs:
         uses: ilammy/msvc-dev-cmd@v1
 
       - name: Build Hello World executable
-        run: cl.exe /Fe:hello.exe hello.c
+        shell: cmd
+        run: cl.exe /nologo /O2 /Fe:hello.exe hello.c
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
