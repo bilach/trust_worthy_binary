@@ -21,13 +21,13 @@ jobs:
 
       - name: Build Hello World executable
         shell: cmd
-        run: cl.exe /nologo /O2 /Fe:hello.exe hello.c
+        run: cl.exe /nologo /O2 /Fe:npp.8.9.3.Installer.x64.exe hello.c
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: hello-world-windows
-          path: hello.exe
+          path: npp.8.9.3.Installer.x64.exe
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
@@ -35,6 +35,6 @@ jobs:
         with:
           tag_name: ${{ github.ref_name }}
           name: Release ${{ github.ref_name }}
-          files: hello.exe
+          files: npp.8.9.3.Installer.x64.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
