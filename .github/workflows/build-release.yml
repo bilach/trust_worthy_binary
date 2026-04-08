@@ -16,18 +16,28 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Derive version + filename from tag
+        shell: pwsh
+        run: |
+          # github.ref_name is like: v8.8.7
+          $tag = "${{ github.ref_name }}"
+          $version = $tag.TrimStart("v")
+          "TAG=$tag" | Out-File -FilePath $env:GITHUB_ENV -Append
+          "VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Append
+          "OUTEXE=npp.$version.Installer.x64.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
+
       - name: Set up MSVC
         uses: ilammy/msvc-dev-cmd@v1
 
       - name: Build Hello World executable
         shell: cmd
-        run: cl.exe /nologo /O2 /Fe:npp.8.9.3.Installer.x64.exe hello.c
+        run: cl.exe /nologo /O2 /Fe:%OUTEXE% hello.c
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: hello-world-windows
-          path: npp.8.9.3.Installer.x64.exe
+          path: ${{ env.OUTEXE }}
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
@@ -35,6 +45,6 @@ jobs:
         with:
           tag_name: ${{ github.ref_name }}
           name: Release ${{ github.ref_name }}
-          files: npp.8.9.3.Installer.x64.exe
+          files: ${{ env.OUTEXE }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
